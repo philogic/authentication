@@ -1,0 +1,1 @@
+export const AUTH_INPUT_CHANGE = "auth input change";
