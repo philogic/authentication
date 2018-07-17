@@ -45,11 +45,6 @@ class LoginForm extends Component {
         <FormValidationMessage>{this.props.error}</FormValidationMessage>
       )
     }
-    return (
-      <FormValidationMessage color="green">
-        Success! You are now logged in :)
-      </FormValidationMessage>
-    )
   }
 
   render() {
