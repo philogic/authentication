@@ -3,7 +3,7 @@ import {View} from "react-native";
 import {Button, FormLabel, FormInput} from "react-native-elements";
 import {connect} from "react-redux";
 import firebase from "firebase";
-import {authInputChange} from "../actions/AuthActions";
+import {authInputChange, login} from "../actions/AuthActions";
 
 class LoginForm extends Component {
   componentDidMount() {
@@ -17,22 +17,45 @@ class LoginForm extends Component {
     };
     firebase.initializeApp(config);
   };
+  onButtonPress() {
+    const {email, password} = this.props;
+    this.props.login({email, password})
+  }
   render() {
     return (
       <View style={styles.formStyle}>
         <View style={styles.sectionStyle}>
           <FormLabel>Email</FormLabel>
-          <FormInput value="" placeholder="Email" onChangeText={text => this.props.authInputChange({"field": "email", "value": text})}/>
+          <FormInput
+            value={this.props.email}
+            placeholder="Email"
+            onChangeText={text => this.props.authInputChange({"field": "email", "value": text})}/>
         </View>
         <View style={styles.sectionStyle}>
           <FormLabel>Password</FormLabel>
-          <FormInput value="" placeholder="Password" secureTextEntry onChangeText={text => this.props.authInputChange({"field": "password", "value": text})}/>
+          <FormInput
+            value={this.props.password}
+            placeholder="Password"
+            secureTextEntry
+            onChangeText={text => this.props.authInputChange({"field": "password", "value": text})}/>
         </View>
-        <Button title="Login" backgroundColor="#3bd3d4"/>
+        <Button
+          title="Login"
+          backgroundColor="#3bd3d4"
+          onPress={this.onButtonPress.bind(this)}
+        />
       </View>
     )
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    email: state.auth.email,
+    password: state.auth.password,
+    error: state.auth.error
+  }
+};
 
 const styles = {
   formStyle: {
@@ -44,4 +67,5 @@ const styles = {
   }
 };
 
-export default connect(null, {authInputChange})(LoginForm);
+
+export default connect(mapStateToProps, {authInputChange, login})(LoginForm);
