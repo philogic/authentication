@@ -1,6 +1,6 @@
 import React, {Component} from "react";
-import {View} from "react-native";
-import {Button, FormLabel, FormInput} from "react-native-elements";
+import {View, Text, ActivityIndicator} from "react-native";
+import {Button, FormLabel, FormInput, FormValidationMessage} from "react-native-elements";
 import {connect} from "react-redux";
 import firebase from "firebase";
 import {authInputChange, login} from "../actions/AuthActions";
@@ -20,7 +20,38 @@ class LoginForm extends Component {
   onButtonPress() {
     const {email, password} = this.props;
     this.props.login({email, password})
+  };
+
+  displayButtonOrSpinner() {
+    if (this.props.isLoading) {
+      return (
+        <View>
+          <ActivityIndicator size="small"/>
+        </View>
+      );
+    }
+    return (
+      <Button
+        title="Login"
+        backgroundColor="#3bd3d4"
+        onPress={this.onButtonPress.bind(this)}
+      />
+    );
+  };
+
+  displayErrorOrConfirm() {
+    if (this.props.error) {
+      return (
+        <FormValidationMessage>{this.props.error}</FormValidationMessage>
+      )
+    }
+    return (
+      <FormValidationMessage color="green">
+        Success! You are now logged in :)
+      </FormValidationMessage>
+    )
   }
+
   render() {
     return (
       <View style={styles.formStyle}>
@@ -39,11 +70,12 @@ class LoginForm extends Component {
             secureTextEntry
             onChangeText={text => this.props.authInputChange({"field": "password", "value": text})}/>
         </View>
-        <Button
-          title="Login"
-          backgroundColor="#3bd3d4"
-          onPress={this.onButtonPress.bind(this)}
-        />
+        <View style={styles.sectionStyle}>
+          {this.displayErrorOrConfirm()}
+        </View>
+        <View style={styles.sectionStyle}>
+          {this.displayButtonOrSpinner()}
+        </View>
       </View>
     )
   }
@@ -53,6 +85,8 @@ const mapStateToProps = state => {
   return {
     email: state.auth.email,
     password: state.auth.password,
+    isLoading: state.auth.isLoading,
+    user: state.auth.user,
     error: state.auth.error
   }
 };

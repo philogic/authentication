@@ -20,9 +20,9 @@ export default (state = INIT_STATE, action) => {
     case AUTH_BEGIN:
       return {...state, isLoading: true, error: ""};
     case AUTH_SUCCESS:
-      return {...state, user: action.payload};
+      return {...state, email: "", password: "", user: action.payload, isLoading: false};
     case AUTH_FAILURE:
-      return {...state, error: "Authentication failed. Sorry"};
+      return {...state, isLoading: false, error: "Authentication failed. Sorry"};
     default:
       return state
   }
